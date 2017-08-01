@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "784721580886",
+    "project_id": "pickupfinder-725f9"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784721580886:android:3f8c7e7f2c2dab46",
+        "android_client_info": {
+          "package_name": "com.replace.pickupfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784721580886-dvndp337f74kftk5ep5npdei5t7v1mpm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.replace.pickupfinder",
+            "certificate_hash": "c2c6699ce14186db7c6489f8beaa325417421e03"
+          }
+        },
+        {
+          "client_id": "784721580886-mu7obgitdmqrn0so7ni13r4pgf8k2q17.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaR7cODTLEonQAruRm7nub3B7LJ56IY6I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
