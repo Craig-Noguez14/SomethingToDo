@@ -43,7 +43,9 @@ import com.google.android.gms.common.api.ResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import Helpers.SessionManager;
 import Models.User;
 import Repositories.UserRepository;
 import retrofit.Callback;
@@ -62,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private AutoCompleteTextView mNameView;
     private EditText mPhoneView;
     private EditText mEmailView;
+    private boolean _userExists = false;
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -69,6 +72,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
     UserRepository userRepository;
+    // Session Manager Class
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        session = new SessionManager(getApplicationContext());
+        session.logoutUser();
+
+        if (session.isLoggedIn()) {
+            session.checkLogin();
+        }
     }
 
     @Override
@@ -176,30 +188,36 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         String phone = mPhoneView.getText().toString();
         String email = mEmailView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(phone) && !isPasswordValid(phone)) {
-            mPhoneView.setError(getString(R.string.error_invalid_phone));
-            focusView = mPhoneView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
+        //TODO: MOVE THIS STUFF TO RULES ENGINE
         if (TextUtils.isEmpty(name)) {
-            mPhoneView.setError(getString(R.string.error_field_required));
-            focusView = mPhoneView;
-            cancel = true;
+            mNameView.setError(getString(R.string.error_field_required));
+            mNameView.requestFocus();
         }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
+        else if (TextUtils.isEmpty(phone)) {
+            mPhoneView.setError(getString(R.string.error_field_required));
+            mPhoneView.requestFocus();
+        }
+
+        else if (!isPasswordValid(phone)) {
+            mPhoneView.setError(getString(R.string.error_invalid_phone));
+            mPhoneView.requestFocus();
+        }
+
+        else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            mEmailView.requestFocus();
+        }
+
+        else if (!doesUserExist(email)) {
+            mEmailView.setError(getString(R.string.error_already_exists));
+            mEmailView.requestFocus();
+        }
+
+        else {
             showProgress(true);
             saveUser(name, phone, email);
+            session.createLoginSession(name, email);
         }
     }
 
@@ -226,6 +244,43 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() == 10;
+    }
+
+    private boolean isEmailValid(String email) {
+        Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+                "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                        "\\@" +
+                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                        "(" +
+                        "\\." +
+                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                        ")+"
+        );
+
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
+
+    private boolean doesUserExist(String email) {
+        Callback<User> responseCallback = new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                if (user != null) {
+                    _userExists = true;
+                } else {
+                    _userExists = false;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "handleSignInResult:");
+            }
+
+        };
+
+        userRepository.getService().GetUserByEmail(email, responseCallback);
+
+        return _userExists;
     }
 
     /**

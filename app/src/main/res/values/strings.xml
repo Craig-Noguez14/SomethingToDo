@@ -8,6 +8,8 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_phone">This phone number is too short</string>
+    <string name="error_invalid_email">This is not a valid email address</string>
+    <string name="error_already_exists">This email address is already in use</string>
     <string name="error_incorrect_phone">This phone number is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
