@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -43,6 +44,12 @@ import com.google.android.gms.common.api.ResultCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import Models.User;
+import Repositories.UserRepository;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -54,13 +61,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     // UI references.
     private AutoCompleteTextView mNameView;
     private EditText mPhoneView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private EditText mEmailView;
+
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
+    UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,18 +76,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mNameView = (AutoCompleteTextView) findViewById(R.id.name);
-
         mPhoneView = (EditText) findViewById(R.id.phone);
-        mPhoneView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+        mEmailView = (EditText) findViewById(R.id.email);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -89,8 +87,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
         findViewById(R.id.google_sign_in_button).setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -113,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onStart() {
         super.onStart();
+        userRepository = new UserRepository();
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
@@ -172,23 +169,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // Reset errors.
         mNameView.setError(null);
         mPhoneView.setError(null);
+        mEmailView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mNameView.getText().toString();
-        String password = mPhoneView.getText().toString();
+        String name = mNameView.getText().toString();
+        String phone = mPhoneView.getText().toString();
+        String email = mEmailView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(phone) && !isPasswordValid(phone)) {
             mPhoneView.setError(getString(R.string.error_invalid_phone));
             focusView = mPhoneView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(name)) {
             mPhoneView.setError(getString(R.string.error_field_required));
             focusView = mPhoneView;
             cancel = true;
@@ -199,12 +198,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
-            //mAuthTask = new UserLoginTask(email, password);
-            //mAuthTask.execute((Void) null);
+            saveUser(name, phone, email);
         }
+    }
+
+    private void saveUser(String name, String phone, String email) {
+        User user = new User();
+        user.Name = name;
+        user.PhoneNumber = phone;
+        user.Email = email;
+
+        userRepository.getService().AddUser(user, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "Failed to get user");
+            }
+
+        });
     }
 
     private boolean isPasswordValid(String password) {
