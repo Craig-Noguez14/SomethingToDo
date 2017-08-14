@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.replace.pickupfinder.LoginActivity;
+import com.replace.pickupfinder.EventActivity;
 import com.replace.pickupfinder.MapActivity;
 
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class SessionManager {
      * user to login page Else won't do anything
      */
     public void checkLogin() {
-        Intent intent = new Intent(_context, MapActivity.class);
+        Intent intent = new Intent(_context, EventActivity.class);
 
         // Closing all the Activities
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

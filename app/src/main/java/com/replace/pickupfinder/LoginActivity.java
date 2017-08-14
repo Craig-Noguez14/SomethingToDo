@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Intent intent = new Intent(this, MapActivity.class);
+            Intent intent = new Intent(this, EventActivity.class);
             startActivity(intent);
         }
     }
@@ -288,7 +288,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, EventActivity.class);
         startActivity(intent);
     }
 
