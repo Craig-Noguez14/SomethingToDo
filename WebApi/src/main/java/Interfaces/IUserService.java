@@ -1,22 +1,21 @@
 package Interfaces;
 
+import android.telecom.Call;
+
 import Models.User;
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
+import okhttp3.ResponseBody;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface IUserService {
 
-    @GET("/user/{email}/")
-    public void GetUserByEmail(@Path("email") String email,Callback<User> callback);
+    @GET("user/{email}/")
+    public retrofit2.Call<User> GetUserByEmail(@Path("email") String email);
 
     //i.e. http://localhost/api/institute/Students
     //Add student record and post content in HTTP request BODY
-    @POST("/user/save")
-    public void AddUser(@Body User user,Callback<User> callback);
+    @POST("user/save")
+    public retrofit2.Call<ResponseBody> AddUser(@Body User user);
 }

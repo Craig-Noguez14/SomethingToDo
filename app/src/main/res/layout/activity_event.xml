@@ -27,6 +27,12 @@
                 android:layout_height="wrap_content"
                 android:tag="@string/app_name" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/place_required"
+                android:text="@string/place_required"/>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -52,10 +58,10 @@
                     android:layout_height="102dp"
                     android:hint="@string/prompt_event"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textLongMessage"
+                    android:inputType="textMultiLine"
                     android:lines="10"
                     android:singleLine="false"
-                    android:maxLength="200" />
+                    android:maxLength="300" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -139,14 +145,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:name="Helpers.DatePickerFragment"
-                    android:id="@+id/date_picker">
+                    android:id="@+id/end_date_picker">
                 </fragment>
 
                 <fragment
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:name="Helpers.TimePickerFragment"
-                    android:id="@+id/time_picker">
+                    android:id="@+id/end_time_picker">
 
                 </fragment>
 

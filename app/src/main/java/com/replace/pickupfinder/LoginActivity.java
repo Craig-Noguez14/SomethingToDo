@@ -40,7 +40,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,9 +50,10 @@ import java.util.regex.Pattern;
 import Helpers.SessionManager;
 import Models.User;
 import Repositories.UserRepository;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -208,16 +211,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             mEmailView.setError(getString(R.string.error_invalid_email));
             mEmailView.requestFocus();
         }
-
-        else if (!doesUserExist(email)) {
-            mEmailView.setError(getString(R.string.error_already_exists));
-            mEmailView.requestFocus();
-        }
-
         else {
-            showProgress(true);
-            saveUser(name, phone, email);
-            session.createLoginSession(name, email);
+            doesUserExist(email, name, phone);
         }
     }
 
@@ -227,17 +222,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         user.PhoneNumber = phone;
         user.Email = email;
 
-        userRepository.getService().AddUser(user, new Callback<User>() {
+        userRepository.getService().AddUser(user).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void success(User user, Response response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
             }
-
             @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "Failed to get user");
-            }
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
+            }
         });
     }
 
@@ -260,27 +253,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
 
-    private boolean doesUserExist(String email) {
-        Callback<User> responseCallback = new Callback<User>() {
+    private void doesUserExist(String email, String name, String phone) {
+        userRepository.getService().GetUserByEmail(email).enqueue(new Callback<User>() {
             @Override
-            public void success(User user, Response response) {
-                if (user != null) {
-                    _userExists = true;
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.body() != null) {
+                    mEmailView.setError(getString(R.string.error_already_exists));
+                    mEmailView.requestFocus();
                 } else {
-                    _userExists = false;
+                    showProgress(true);
+                    saveUser(name, phone, email);
+                    session.createLoginSession(name, email);
                 }
             }
-
             @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "handleSignInResult:");
+            public void onFailure(Call<User> call, Throwable t) {
+
             }
-
-        };
-
-        userRepository.getService().GetUserByEmail(email, responseCallback);
-
-        return _userExists;
+        });
     }
 
     /**

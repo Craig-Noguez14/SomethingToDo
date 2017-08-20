@@ -1,8 +1,4 @@
-package Enums;
-
-/**
- * Created by Craig on 8/12/2017.
- */
+package Models;
 
 public enum SubCategory {
     Soccer,
@@ -14,5 +10,5 @@ public enum SubCategory {
     Softball,
     UltimateFrisbee,
     Golf,
-    
+
 }

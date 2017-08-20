@@ -26,6 +26,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
 
     private OnTimePickedListener mCallback;
     Integer mLayoutId = null;
+    Button time;
 
     public interface OnTimePickedListener {
         public void onTimePicked(int textId, int hour, int minute);
@@ -52,10 +53,10 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         View view = inflater.inflate(R.layout.timepicker_layout, container, false);
         mCallback = (OnTimePickedListener)getActivity();
         mLayoutId = TimePickerFragment.this.getId();
-        Button timeButton = (Button) view.findViewById(R.id.time_button);
+        time = (Button) view.findViewById(R.id.time_button);
 
         // Show a timepicker when the timeButton is clicked
-        timeButton.setOnClickListener(new View.OnClickListener() {
+        time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
@@ -92,6 +93,12 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         if(mCallback != null)
         {
             mCallback.onTimePicked(mLayoutId, hourOfDay, minute);
+            time.setText(hourOfDay + ":" + minute);
+            time.setError(null);
         }
+    }
+
+    public void setErrorText() {
+        time.setError(getString(R.string.error_field_required));
     }
 }
