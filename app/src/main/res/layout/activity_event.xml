@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.replace.pickupfinder.EventActivity">
+    tools:context="com.replace.pickupfinder.ui.event.EventActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -115,17 +115,10 @@
                 <fragment
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:name="Helpers.DatePickerFragment"
+                    android:name="com.replace.pickupfinder.ui.event.fragments.DatePickerFragment"
                     android:id="@+id/start_date_picker">
                 </fragment>
 
-                <fragment
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="Helpers.TimePickerFragment"
-                    android:id="@+id/start_time_picker">
-
-                </fragment>
 
             </LinearLayout>
 
@@ -144,16 +137,8 @@
                 <fragment
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:name="Helpers.DatePickerFragment"
+                    android:name="com.replace.pickupfinder.ui.event.fragments.DatePickerFragment"
                     android:id="@+id/end_date_picker">
-                </fragment>
-
-                <fragment
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="Helpers.TimePickerFragment"
-                    android:id="@+id/end_time_picker">
-
                 </fragment>
 
             </LinearLayout>

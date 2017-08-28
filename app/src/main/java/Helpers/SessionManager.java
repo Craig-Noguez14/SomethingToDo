@@ -5,8 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.replace.pickupfinder.EventActivity;
-import com.replace.pickupfinder.MapActivity;
+import com.replace.pickupfinder.ui.event.EventActivity;
 
 import java.util.HashMap;
 

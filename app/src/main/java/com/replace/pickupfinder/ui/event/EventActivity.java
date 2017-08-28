@@ -1,7 +1,6 @@
-package com.replace.pickupfinder;
+package com.replace.pickupfinder.ui.event;
 
 import android.content.SharedPreferences;
-import android.location.Geocoder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -18,25 +17,25 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.replace.pickupfinder.Bootstrapper;
+import com.replace.pickupfinder.R;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import Helpers.DatePickerFragment;
-import Helpers.TimePickerFragment;
+import javax.inject.Inject;
+
+import com.replace.pickupfinder.ui.event.fragments.DatePickerFragment;
+
+import com.replace.pickupfinder.ui.event.fragments.TimePickerFragment;
 import Helpers.Utils;
 import Models.Address;
-import Models.EventType;
 import Models.SubCategory;
 import Repositories.EventRepository;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public class EventActivity extends FragmentActivity implements TimePickerFragment.OnTimePickedListener, DatePickerFragment.OnDatePickedListener {
+public class EventActivity extends FragmentActivity {
 
     private static final String TAG = "EventActivity";
     private int _startMinute = -1;
@@ -52,10 +51,15 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
     private Place _eventPlace;
     private TextView _placeRequired;
 
+    @Inject
+    Retrofit retrofit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        //((Bootstrapper) getApplication()).getComponent().inject(this);
+
         PopulateCategoryDropDown();
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -91,7 +95,7 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
         });
     }
 
-    @Override
+    /*@Override
     public void onTimePicked(int layoutId, int hour, int minute) {
         if (layoutId == R.id.start_time_picker) {
             _startHour = hour;
@@ -100,9 +104,9 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
             _endHour = hour;
             _endMinute = minute;
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onDatePicked(int layoutId, int year, int month, int day) {
         if (layoutId == R.id.start_date_picker) {
             _startDay = day;
@@ -113,7 +117,7 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
             _endMonth = month;
             _endYear = year;
         }
-    }
+    }*/
 
     //TODO: MOVE TO A SERVICE
     protected void PopulateCategoryDropDown() {
@@ -142,12 +146,6 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
         if (TextUtils.isEmpty(_eventDescription.getText())) {
             _eventDescription.setError(getString(R.string.error_field_required));
             _eventDescription.requestFocus();
-        } else if (_startMinute == -1 || _startHour == -1) {
-            TimePickerFragment t = (TimePickerFragment) getFragmentManager().findFragmentById(R.id.start_time_picker);
-            t.setErrorText();
-        } else if (_endMinute == -1 || _endHour == -1) {
-            TimePickerFragment t = (TimePickerFragment) getFragmentManager().findFragmentById(R.id.end_time_picker);
-            t.setErrorText();
         } else if (_startYear == -1 || _startMonth == -1 || _startDay == -1) {
             DatePickerFragment t = (DatePickerFragment) getFragmentManager().findFragmentById(R.id.start_date_picker);
             t.setErrorText();
@@ -157,24 +155,56 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
         }
 
         else {
-            //Geocoder mGeoCoder = new Geocoder(EventActivity.this);
-            //List<android.location.Address> a = mGeoCoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+            //Address address = null;
+            /*Geocoder mGeoCoder = new Geocoder(this, Locale.getDefault());
 
-            /*Address address = new Address(a.get(0).getLatitude(),
-                    a.get(0).getLongitude(),
-                    _eventPlace.getAddress().toString(),
-                    a.get(0).getLocality(),
-                    a.get(0).getAdminArea(),
-                    a.get(0).getPostalCode());*/
+                new Thread(() -> {
+                    try {
+                        List<com.doctoror.geocoder.Address> a = null;
+                        a = mGeoCoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1, true);
+                        Address address = new Address(place.getLatLng().latitude,
+                                place.getLatLng().longitude,
+                                a.get(0).getStreetAddress(),
+                                a.get(0).getLocality(),
+                                a.get(0).getAdministrativeAreaLevel1(),
+                                a.get(0).getPostalCode());
+                    } catch (GeocoderException e) {
+                        e.printStackTrace();
+                    }
+                }).start();*/
 
-            Address address = new Address(1,
+
+            /*address = new Address(place.getLatLng().latitude,
+                        place.getLatLng().longitude,
+                        a.get(0).getStreetAddress(),
+                        a.get(0).getLocality(),
+                        a.get(0).getAdministrativeAreaLevel1(),
+                        a.get(0).getPostalCode());*/
+
+
+            /*LocationRepository locRepo = new LocationRepository();
+
+            locRepo.getService().getCityResults(place.getId(), getString(R.string.google_geocoder_api)).enqueue(new Callback<GeoCodeLocation>() {
+                @Override
+                public void onResponse(Call<GeoCodeLocation> call, Response<GeoCodeLocation> response) {
+                    GeoCodeLocation places = response.body();
+                    places.PlaceId = "t";
+                }
+
+                @Override
+                public void onFailure(Call<GeoCodeLocation> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });*/
+
+            /*Address address = new Address(1,
                     1,
                     place.getAddress().toString(),
                     "",
                     "",
-                    "");
+                    "");*/
 
-            Date startDate = new Date(_startYear, _startMonth, _startDay, _startHour, _startMinute);
+            /*Date startDate = new Date(_startYear, _startMonth, _startDay, _startHour, _startMinute);
             Date endDate = new Date(_endYear, _endMonth, _endDay, _endHour, _endMinute);
 
             Models.Event event = new Models.Event(_eventDescription.getText().toString(), startDate, endDate, prefs.getString("email", ""), EventType.Public, SubCategory.Baseball, address);
@@ -188,7 +218,7 @@ public class EventActivity extends FragmentActivity implements TimePickerFragmen
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.d("FAIL", "FAIL");
                 }
-            });
+            });*/
         }
     }
 
