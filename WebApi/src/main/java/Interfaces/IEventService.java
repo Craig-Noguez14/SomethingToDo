@@ -3,9 +3,11 @@ package Interfaces;
 import Models.Event;
 import Models.User;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import io.reactivex.Observable;
 
 public interface IEventService {
     @Headers({
@@ -13,5 +15,5 @@ public interface IEventService {
             "Content-type: application/json"
     })
     @POST("event/PostEvent")
-    public retrofit2.Call<ResponseBody> CreateEvent(@Body Event event);
+    public Observable<ResponseBody> CreateEvent(@Body Event event);
 }

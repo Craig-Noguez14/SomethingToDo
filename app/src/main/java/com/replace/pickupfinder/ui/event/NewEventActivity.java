@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.doctoror.geocoder.Geocoder;
@@ -15,6 +16,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.patloew.rxlocation.RxLocation;
+import com.replace.pickupfinder.Bootstrapper;
 import com.replace.pickupfinder.R;
 import com.replace.pickupfinder.ui.base.BaseActivity;
 import com.replace.pickupfinder.ui.event.fragments.DatePickerFragment;
@@ -31,11 +33,13 @@ import javax.inject.Inject;
 import Helpers.Utils;
 import Models.Address;
 import Models.Event;
+import Models.EventType;
 import Models.SubCategory;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
+import okhttp3.ResponseBody;
 
 public class NewEventActivity extends BaseActivity implements EventMvpView, DatePickerFragment.OnDatePickedListener {
 
@@ -47,9 +51,13 @@ public class NewEventActivity extends BaseActivity implements EventMvpView, Date
     @Inject
     RxLocation rxLocation;
 
+    @BindView(R.id.eventDescription)
+    EditText mDescription;
+
     @OnClick(R.id.createEvent)
     void onCreateEventClick(View v) {
-        //mPresenter.onCreateEventClick();
+        Event event = new Event(mDescription.getText().toString(), startDate, endDate, "Craig", EventType.Public, SubCategory.Soccer, _address);
+        mPresenter.onCreateEventClick(event);
     }
 
     private Date startDate = null;
@@ -84,22 +92,26 @@ public class NewEventActivity extends BaseActivity implements EventMvpView, Date
             public void onPlaceSelected(Place place) {
                 _eventPlace = place;
                 //TODO: Refactor if they ever fix android geocoder BS
-                Geocoder mGeoCoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                new Thread(() -> {
-                    try {
-                        List<com.doctoror.geocoder.Address> a = null;
-                        a = mGeoCoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1, true);
-                        _address = new Address(place.getLatLng().latitude,
-                                place.getLatLng().longitude,
-                                a.get(0).getStreetAddress(),
-                                a.get(0).getLocality(),
-                                a.get(0).getAdministrativeAreaLevel1(),
-                                a.get(0).getPostalCode());
-                    } catch (GeocoderException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                Thread t1 = new Thread(new Runnable() {
+                    public void run()
+                    {
+                        try {
+                            Geocoder mGeoCoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                            List<com.doctoror.geocoder.Address> a = null;
+                            a = mGeoCoder.getFromLocation(_eventPlace.getLatLng().latitude, _eventPlace.getLatLng().longitude, 1, true);
+                            _address = new Address(_eventPlace.getLatLng().latitude,
+                                    _eventPlace.getLatLng().longitude,
+                                    a.get(0).getStreetAddress(),
+                                    a.get(0).getLocality(),
+                                    a.get(0).getAdministrativeAreaLevel1(),
+                                    a.get(0).getPostalCode());
+                        } catch (GeocoderException e) {
+                            e.printStackTrace();
+                        }
+                    }});
+
+                t1.start();
             }
 
             @Override
@@ -126,12 +138,6 @@ public class NewEventActivity extends BaseActivity implements EventMvpView, Date
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("HERE1234", "HERE1234");
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onDatePicked(int layoutId, Date date) {
         if (layoutId == R.id.start_date_picker) {
             startDate = date;
@@ -140,18 +146,9 @@ public class NewEventActivity extends BaseActivity implements EventMvpView, Date
         }
     }
 
-
     @Override
-    public void updateAddress(List<android.location.Address> addresses) {
-        Log.d("HERE", "HERE");
-        _address = new Address(
-                addresses.get(0).getLatitude(),
-                addresses.get(0).getLongitude(),
-                addresses.get(0).getAddressLine(0),
-                addresses.get(0).getLocality(),
-                addresses.get(0).getAdminArea(),
-                addresses.get(0).getPostalCode());
-
+    public void onCreatedEvent(ResponseBody responseBody) {
+        Log.d("SUCCESS", "SUCCESS");
     }
 }
 

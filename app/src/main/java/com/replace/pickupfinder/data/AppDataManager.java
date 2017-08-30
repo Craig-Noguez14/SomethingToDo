@@ -21,8 +21,11 @@ import com.replace.pickupfinder.di.ApplicationContext;
 
 import java.util.List;
 
+import Models.Event;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
 
 @Singleton
 public class AppDataManager implements DataManager {
@@ -36,7 +39,8 @@ public class AppDataManager implements DataManager {
     @Inject
     public AppDataManager(@ApplicationContext Context context,
                           PreferencesHelper preferencesHelper,
-                          ApiHelper apiHelper) {
+                          ApiHelper apiHelper,
+                          Retrofit retrofit) {
         mContext = context;
         mPreferencesHelper = preferencesHelper;
         mApiHelper = apiHelper;
@@ -79,6 +83,11 @@ public class AppDataManager implements DataManager {
     @Override
     public Observable<List<android.location.Address>> getLocationInfo(Place place, RxLocation rxLocation) {
         return mApiHelper.getLocationInfo(place, rxLocation);
+    }
+
+    @Override
+    public Observable<ResponseBody> createEvent(Event event) {
+        return mApiHelper.createEvent(event);
     }
 
     @Override

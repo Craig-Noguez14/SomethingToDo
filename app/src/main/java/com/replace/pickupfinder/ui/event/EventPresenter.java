@@ -31,11 +31,12 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 public class EventPresenter<V extends EventMvpView> extends BasePresenter<V> implements
         EventMvpPresenter<V> {
 
-    private static final String TAG = "FeedPresenter";
+    private static final String TAG = "EventPresenter";
 
     @Inject
     public EventPresenter(DataManager dataManager,
@@ -46,22 +47,54 @@ public class EventPresenter<V extends EventMvpView> extends BasePresenter<V> imp
 
     @Override
     public void onCreateEventClick(Event event) {
-        if (TextUtils.isEmpty(event.Description)) {
-            getMvpView().onError(R.string.error_field_required);
+        /*if (TextUtils.isEmpty(event.Description)) {
+            getMvpView().onError(R.string.event_description_required);
             return;
         }
         if (event.StartOn == null) {
-            getMvpView().onError(R.string.error_field_required);
+            getMvpView().onError(R.string.event_start_required);
             return;
         }
         if (event.ExpiresOn == null) {
-            getMvpView().onError(R.string.error_field_required);
+            getMvpView().onError(R.string.event_end_required);
             return;
         }
+        if (event.Location == null) {
+            getMvpView().onError(R.string.event_location_required);
+            return;
+        }*/
 
         getMvpView().showLoading();
 
+        getCompositeDisposable().add(getDataManager()
+                .createEvent(event)
+                .subscribeOn(Schedulers.io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody response) throws Exception {
+                        getMvpView().onCreatedEvent(response);
 
+                        getMvpView().hideLoading();
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                        if (!isViewAttached()) {
+                            return;
+                        }
+
+                        getMvpView().hideLoading();
+
+                        // handle the login error here
+                        if (throwable instanceof ANError) {
+                            ANError anError = (ANError) throwable;
+                            handleApiError(anError);
+                        }
+                    }
+                }));
     }
 
     @Override

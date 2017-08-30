@@ -80,7 +80,6 @@ public class EventActivity extends FragmentActivity {
         });
 
         autocompleteFragment.setHint("Enter location of event...");
-        _placeRequired = (TextView) findViewById(R.id.place_required);
         _placeRequired.setVisibility(View.GONE);
         Button createEventButton = (Button) findViewById(R.id.createEvent);
         createEventButton.setOnClickListener(new View.OnClickListener() {

@@ -27,12 +27,6 @@
                 android:layout_height="wrap_content"
                 android:tag="@string/app_name" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/place_required"
-                android:text="@string/place_required"/>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

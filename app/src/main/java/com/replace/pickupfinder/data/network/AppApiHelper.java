@@ -7,6 +7,8 @@ import android.location.Geocoder;
 import com.google.android.gms.location.places.Place;
 import com.patloew.rxlocation.Geocoding;
 import com.patloew.rxlocation.RxLocation;
+import com.replace.pickupfinder.Bootstrapper;
+import com.replace.pickupfinder.di.ApplicationContext;
 import com.replace.pickupfinder.ui.event.NewEventActivity;
 import com.rx2androidnetworking.Rx2AndroidNetworking;
 
@@ -21,15 +23,24 @@ import com.replace.pickupfinder.data.network.model.OpenSourceResponse;
 import java.util.List;
 import java.util.Locale;
 
+import Interfaces.IEventService;
+import Models.Event;
+import Repositories.EventRepository;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
 
 @Singleton
 public class AppApiHelper implements ApiHelper {
 
     private ApiHeader mApiHeader;
+
+    @Inject
+    Retrofit retrofit;
 
     @Inject
     public AppApiHelper(ApiHeader apiHeader) {
@@ -91,5 +102,10 @@ public class AppApiHelper implements ApiHelper {
     public Observable<List<Address>> getLocationInfo(Place place, RxLocation rxLocation) {
         Geocoding geocoding = rxLocation.geocoding();
         return geocoding.fromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1).toObservable();
+    }
+
+    @Override
+    public Observable<ResponseBody> createEvent(Event event) {
+        return retrofit.create(IEventService.class).CreateEvent(event);
     }
 }

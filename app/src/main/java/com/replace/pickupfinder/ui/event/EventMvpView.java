@@ -6,6 +6,8 @@ import com.replace.pickupfinder.ui.base.MvpView;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+
 public interface EventMvpView extends MvpView {
-    void updateAddress(List<android.location.Address> addresses);
+    void onCreatedEvent(ResponseBody responseBody);
 }

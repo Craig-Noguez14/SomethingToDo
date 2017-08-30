@@ -11,8 +11,10 @@ import com.replace.pickupfinder.data.network.model.LoginResponse;
 
 import java.util.List;
 
+import Models.Event;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import okhttp3.ResponseBody;
 
 public interface ApiHelper {
 
@@ -29,4 +31,6 @@ public interface ApiHelper {
     Observable<OpenSourceResponse> getOpenSourceApiCall();
 
     Observable<List<android.location.Address>> getLocationInfo(Place place, RxLocation rxLocation);
+
+    Observable<ResponseBody> createEvent(Event event);
 }

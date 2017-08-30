@@ -7,9 +7,11 @@ import android.content.Context;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import retrofit2.Retrofit;
 
 import com.replace.pickupfinder.Bootstrapper;
 import com.replace.pickupfinder.data.DataManager;
+import com.replace.pickupfinder.data.network.AppApiHelper;
 import com.replace.pickupfinder.di.ApplicationContext;
 import com.replace.pickupfinder.di.module.ApplicationModule;
 import com.replace.pickupfinder.di.module.WebApiModule;
@@ -19,8 +21,6 @@ import com.replace.pickupfinder.di.module.WebApiModule;
 public interface ApplicationComponent {
 
     void inject(Bootstrapper app);
-
-    //void inject(SyncService service);
 
     @ApplicationContext
     Context context();

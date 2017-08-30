@@ -19,8 +19,13 @@
     <string name="google_geocoder_api">AIzaSyB46AZaaXi-oVMbjeQ2JGarSKNukbrcd1I</string>
     <string name="title_activity_maps">Map</string>
 
+    <!--Create Event-->
+    <string name="event_description_required">Please enter a description for the event!</string>
+    <string name="event_location_required">Please select or enter a location for the event</string>
+    <string name="event_start_required">Please select a start date for the event</string>
+    <string name="event_end_required">Please select an end date for the event</string>
+
     <!--Fetch Address-->
-    <string name="no_geocoder_available">No geocoder available</string>
 
     <string name="fetch_address">Fetch address</string>
 
@@ -30,8 +35,6 @@
     <string name="no_location_data_provided">No location data provided</string>
     <string name="service_not_available">Sorry, the service is not available</string>
     <string name="invalid_lat_long_used">Invalid latitude or longitude used</string>
-    <string name="place_required">Please select or enter a location for the event</string>
-    <string name="event_description_required">Please enter a description for the event</string>
 
     <!--App Message-->
     <string name="api_retry_error">Please retry!</string>

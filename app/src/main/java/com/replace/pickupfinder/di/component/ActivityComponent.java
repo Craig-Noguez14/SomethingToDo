@@ -17,5 +17,4 @@ public interface ActivityComponent {
     void inject(NewEventActivity activity);
 
     void inject(LoginActivity activity);
-
 }
