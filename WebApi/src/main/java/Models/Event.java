@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class Event {
+
+    public int Id;
+
     public String Description;
 
     @SerializedName("StartOn")

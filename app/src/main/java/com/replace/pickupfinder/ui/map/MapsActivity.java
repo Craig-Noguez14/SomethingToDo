@@ -26,8 +26,10 @@ import com.replace.pickupfinder.utils.SignalRHubConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import Models.Event;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
@@ -64,13 +66,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mSignalRHubConnection = new SignalRHubConnection(MapsActivity.this);
 
         SignalRHubConnection.startSignalR("EventHub");
-        SignalRHubConnection.mHubProxy.on( "Send", new SubscriptionHandler1<String>()
+        SignalRHubConnection.mHubProxy.on( "Send", new SubscriptionHandler1<Models.Event[]>()
         {
             @Override
-            public void run(String msg) {
-                Log.d("result := ", msg);
+            public void run(final Models.Event[] msg) {
+                Log.d("result := ", msg[0].Description);
             }
-        }, String.class);
+        }, Models.Event[].class);
     }
 
     @Override

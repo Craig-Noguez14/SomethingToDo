@@ -1,6 +1,7 @@
 package Models;
 
 public class Address {
+    public int Id;
     public Double Longitude;
     public Double Latitude;
     public String Address;
