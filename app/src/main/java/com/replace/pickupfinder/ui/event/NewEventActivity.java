@@ -102,7 +102,7 @@ public class NewEventActivity extends BaseActivity implements EventMvpView, Date
                             a = mGeoCoder.getFromLocation(_eventPlace.getLatLng().latitude, _eventPlace.getLatLng().longitude, 1, true);
                             _address = new Address(_eventPlace.getLatLng().latitude,
                                     _eventPlace.getLatLng().longitude,
-                                    a.get(0).getStreetAddress(),
+                                    a.get(0).getFormattedAddress(),
                                     a.get(0).getLocality(),
                                     a.get(0).getAdministrativeAreaLevel1(),
                                     a.get(0).getPostalCode());

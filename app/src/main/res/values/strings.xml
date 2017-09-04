@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">PickupFinder</string>
 
+    <!--WebApi Url-->
+    <string name="api_url">http://192.168.0.12:8080/api/</string>
+
     <!-- Strings related to login -->
     <string name="prompt_name">Name</string>
     <string name="prompt_phone">Phone</string>

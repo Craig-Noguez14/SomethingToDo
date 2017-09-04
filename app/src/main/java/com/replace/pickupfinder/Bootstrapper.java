@@ -30,7 +30,7 @@ public class Bootstrapper extends Application {
 
         mApplicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
-                .webApiModule(new WebApiModule("http://192.168.0.12:8080/api/"))
+                .webApiModule(new WebApiModule(getApplicationContext().getString(R.string.api_url)))
                 .build();
 
 

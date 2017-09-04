@@ -45,13 +45,6 @@ dependencies {
     compile "com.android.support:support-v4:${support_library_version}"
     compile project(":webapi")
     compile "com.google.android.gms:play-services-maps:${gms_library_version}"
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.google.guava:guava:20.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.wdullaer:materialdatetimepicker:3.2.2'
-    testCompile 'junit:junit:4.12'
 
     // font
     compile "uk.co.chrisjenx:calligraphy:$rootProject.calligraphyVersion"
@@ -74,8 +67,6 @@ dependencies {
     // dependency injection
     compile "com.google.dagger:dagger:$rootProject.dagger2Version"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
-    provided 'javax.annotation:jsr250-api:1.0'
-    compile 'javax.inject:javax.inject:1'
 
     // reactive
     compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
@@ -91,10 +82,24 @@ dependencies {
     // logger
     compile "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
-    compile 'com.patloew.rxlocation:rxlocation:1.0.3'
 
+
+    compile files('libs/signalr-client-sdk.jar')
+    compile files('libs/signalr-client-sdk-android.jar')
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.google.guava:guava:20.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.wdullaer:materialdatetimepicker:3.2.2'
+    compile 'javax.inject:javax.inject:1'
+    compile 'com.patloew.rxlocation:rxlocation:1.0.3'
     compile 'com.github.doctoror.geocoder:library:1.2.3'
+    compile 'com.google.code.gson:gson:2.3.1'
+    testCompile 'junit:junit:4.12'
+    provided 'javax.annotation:jsr250-api:1.0'
 }
+
 
 
 
