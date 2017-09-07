@@ -7,12 +7,13 @@ import com.replace.pickupfinder.di.module.ActivityModule;
 
 import dagger.Component;
 import com.replace.pickupfinder.di.PerActivity;
+import com.replace.pickupfinder.ui.map.MapsActivity;
 
 @PerActivity
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 
-    //void inject(EventActivity activity);
+    void inject(MapsActivity activity);
 
     void inject(NewEventActivity activity);
 

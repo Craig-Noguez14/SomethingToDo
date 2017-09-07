@@ -47,7 +47,7 @@ public class SignalRHubConnection {
                     }
                 };
                 mHubConnection.setCredentials(credentials);*/ //IF CONNECTION HAS CREDENTIALS
-                mHubConnection = new HubConnection("http://192.168.0.12:8080");
+                mHubConnection = new HubConnection(context.getResources().getString(R.string.api_url));
                 mHubProxy = mHubConnection.createHubProxy(hubProxy);
                 ClientTransport clientTransport = new   ServerSentEventsTransport(mHubConnection.getLogger());
                 SignalRFuture<Void> signalRFuture = mHubConnection.start(clientTransport);

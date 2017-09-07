@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.replace.pickupfinder.R;
+import com.replace.pickupfinder.ui.base.BaseActivity;
+import com.replace.pickupfinder.ui.event.NewEventActivity;
 import com.replace.pickupfinder.utils.SignalRHubConnection;
 
 import org.json.JSONException;
@@ -29,33 +31,38 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.inject.Inject;
+
 import Models.Event;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback, IMapsView {
 
     private GoogleMap mMap;
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
-    private SignalRHubConnection mSignalRHubConnection;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private Location mLastKnownLocation;
 
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 10;
 
     // A default location (Dallas, TX) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(32.7767, -96.7970);
 
+    @Inject
+    IMapsPresenter<IMapsView> mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        getActivityComponent().inject(this);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -63,16 +70,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mSignalRHubConnection = new SignalRHubConnection(MapsActivity.this);
+        mPresenter.onAttach(MapsActivity.this);
+        setUp();
+    }
 
-        SignalRHubConnection.startSignalR("EventHub");
-        SignalRHubConnection.mHubProxy.on( "Send", new SubscriptionHandler1<Models.Event[]>()
-        {
-            @Override
-            public void run(final Models.Event[] msg) {
-                Log.d("result := ", msg[0].Description);
-            }
-        }, Models.Event[].class);
+    @Override
+    protected void setUp() {
+
     }
 
     @Override
@@ -164,20 +168,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void signalRChatMessageReceived() {
-            // receiveChatMessage method calling from server side because this same method defined on server side
-            SignalRHubConnection.mHubProxy.on("Send", new SubscriptionHandler2<Object, Object>() {
-                @Override
-                public void run(Object o, Object o2) {
-                    Gson gson = new Gson();
-                    String json = gson.toJson(o);
-                    try {
-                        JSONObject responseObject = new JSONObject(json.toString());
-                        Log.d("TESET", responseObject.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, Object.class, Object.class);
+    @Override
+    public void setMarkers(Event[] events) {
+        for(int i = 0; i < events.length; i++) {
+            LatLng loc = new LatLng(events[i].Location.Longitude, events[i].Location.Latitude);
+            mMap.addMarker(new MarkerOptions().position(loc)
+                    .title("Test"));
+        }
     }
 }

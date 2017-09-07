@@ -13,6 +13,8 @@ import com.replace.pickupfinder.data.DataManager;
 import com.replace.pickupfinder.di.ApplicationContext;
 import com.replace.pickupfinder.ui.base.BasePresenter;
 import com.replace.pickupfinder.ui.base.MvpView;
+import com.replace.pickupfinder.ui.map.MapsActivity;
+import com.replace.pickupfinder.utils.SignalRHubConnection;
 import com.replace.pickupfinder.utils.rx.SchedulerProvider;
 
 import java.util.List;
@@ -43,6 +45,7 @@ public class EventPresenter<V extends EventMvpView> extends BasePresenter<V> imp
                          SchedulerProvider schedulerProvider,
                          CompositeDisposable compositeDisposable) {
         super(dataManager, schedulerProvider, compositeDisposable);
+
     }
 
     @Override

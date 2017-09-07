@@ -12,6 +12,9 @@ import com.replace.pickupfinder.di.ActivityContext;
 import com.replace.pickupfinder.ui.event.EventMvpPresenter;
 import com.replace.pickupfinder.ui.event.EventMvpView;
 import com.replace.pickupfinder.ui.event.EventPresenter;
+import com.replace.pickupfinder.ui.map.IMapsPresenter;
+import com.replace.pickupfinder.ui.map.IMapsView;
+import com.replace.pickupfinder.ui.map.MapsPresenter;
 import com.replace.pickupfinder.utils.rx.AppSchedulerProvider;
 import com.replace.pickupfinder.utils.rx.SchedulerProvider;
 
@@ -55,6 +58,12 @@ public class ActivityModule {
     @Provides
     EventMvpPresenter<EventMvpView> provideEventPresenter(
             EventPresenter<EventMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    IMapsPresenter<IMapsView> provideMapsPresenter(
+            MapsPresenter<IMapsView> presenter) {
         return presenter;
     }
 }
